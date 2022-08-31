@@ -2,21 +2,14 @@ import { useEffect, useState } from "react";
 import Seo from "../components/Seo";
 // index는 기본 페이지
 
-export default function Home() {
+export default function Home({ results }) {
   const [movies, setMovies] = useState(); // 빈배열로 정의를 해서 밑의 map코드에서 에러가 나지 않도록
-  useEffect(() => {
-    (async () => {
-      const { results } = await (await fetch(`/api/movies`)).json();
-      console.log(results);
 
-      setMovies(results);
-    })();
-  }, []);
   return (
     <div className="container">
       <Seo title="Home" />
-      {!movies && <h4>로딩중...</h4>}
-      {movies?.map((movie) => (
+      {!results && <h4>로딩중...</h4>}
+      {results?.map((movie) => (
         <div className="movie" key={movie.id}>
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
           <h4>{movie.original_title}</h4>
@@ -45,4 +38,19 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  // 이름 바꾸면 안됨!
+  // 서버에서만 실행됨 , 클라이언트는 접근 불가
+  // object를 리던한다.
+  //서버사이드 렌더링!하는법
+  const { results } = await (
+    await fetch(`http://localhost:3000/api/movies`)
+  ).json();
+  return {
+    props: {
+      results,
+    },
+  };
 }
