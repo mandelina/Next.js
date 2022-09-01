@@ -8,15 +8,7 @@ export default function Home({ results }) {
   const [movies, setMovies] = useState(); // 빈배열로 정의를 해서 밑의 map코드에서 에러가 나지 않도록
   const router = useRouter();
   const onClick = (id, title) => {
-    router.push(
-      {
-        pathname: `/movies/${id}`,
-        query: {
-          title,
-        },
-      },
-      `/movies/${id}` // url을 숨김
-    );
+    router.push(`/movies/${title}/${id}`);
   };
   return (
     <div className="container">
@@ -29,7 +21,7 @@ export default function Home({ results }) {
           key={movie.id}
         >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <Link href={`/movies/${movie.id}`}>
+          <Link href={`/movies/${movie.original_title}/${movie.id}`}>
             <a>{movie.original_title}</a>
           </Link>
         </div>
