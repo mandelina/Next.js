@@ -1,18 +1,37 @@
 import { useEffect, useState } from "react";
 import Seo from "../components/Seo";
+import Link from "next/link";
+import { useRouter } from "next/router";
 // index는 기본 페이지
 
 export default function Home({ results }) {
   const [movies, setMovies] = useState(); // 빈배열로 정의를 해서 밑의 map코드에서 에러가 나지 않도록
-
+  const router = useRouter();
+  const onClick = (id, title) => {
+    router.push(
+      {
+        pathname: `/movies/${id}`,
+        query: {
+          title,
+        },
+      },
+      `/movies/${id}` // url을 숨김
+    );
+  };
   return (
     <div className="container">
       <Seo title="Home" />
       {!results && <h4>로딩중...</h4>}
       {results?.map((movie) => (
-        <div className="movie" key={movie.id}>
+        <div
+          onClick={() => onClick(movie.id, movie.original_title)}
+          className="movie"
+          key={movie.id}
+        >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h4>{movie.original_title}</h4>
+          <Link href={`/movies/${movie.id}`}>
+            <a>{movie.original_title}</a>
+          </Link>
         </div>
       ))}
       <style jsx>{`
